@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 108.0, 113.0, 829.0, 675.0 ],
+		"rect" : [ 421.0, 227.0, 829.0, 675.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -45,7 +45,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 164.0, 18.0, 87.0, 22.0 ],
+					"patching_rect" : [ 214.0, 16.0, 87.0, 22.0 ],
 					"text" : "loadmess start"
 				}
 
@@ -149,7 +149,7 @@
  ]
 					}
 ,
-					"patching_rect" : [ 164.0, 148.0, 29.5, 22.0 ],
+					"patching_rect" : [ 214.0, 146.0, 29.5, 22.0 ],
 					"text" : "gen"
 				}
 
@@ -253,7 +253,7 @@
  ]
 					}
 ,
-					"patching_rect" : [ 206.0, 148.0, 29.5, 22.0 ],
+					"patching_rect" : [ 256.0, 146.0, 29.5, 22.0 ],
 					"text" : "gen"
 				}
 
@@ -265,7 +265,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 164.0, 115.0, 61.0, 22.0 ],
+					"patching_rect" : [ 214.0, 113.0, 61.0, 22.0 ],
 					"text" : "lufsmeter"
 				}
 
@@ -311,8 +311,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "bang" ],
-					"patching_rect" : [ 335.0, 56.0, 119.0, 22.0 ],
-					"text" : "metro 200 @active 1"
+					"patching_rect" : [ 335.0, 56.0, 113.0, 22.0 ],
+					"text" : "metro 20 @active 1"
 				}
 
 			}
@@ -323,7 +323,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"outlettype" : [ "signal", "signal" ],
-					"patching_rect" : [ 164.0, 56.0, 61.0, 22.0 ],
+					"patching_rect" : [ 214.0, 54.0, 61.0, 22.0 ],
 					"text" : "adc~ 5 6"
 				}
 
@@ -335,7 +335,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 164.0, 178.0, 61.0, 22.0 ],
+					"patching_rect" : [ 214.0, 176.0, 61.0, 22.0 ],
 					"text" : "pack 0. 0."
 				}
 
@@ -368,7 +368,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 76.0, 178.0, 63.0, 22.0 ],
+					"patching_rect" : [ 89.0, 176.0, 63.0, 22.0 ],
 					"text" : "script stop"
 				}
 
@@ -380,7 +380,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 54.0, 150.0, 64.0, 22.0 ],
+					"patching_rect" : [ 67.0, 148.0, 64.0, 22.0 ],
 					"text" : "script start"
 				}
 
@@ -396,6 +396,8 @@
 					"saved_object_attributes" : 					{
 						"autostart" : 1,
 						"defer" : 0,
+						"node_bin_path" : "",
+						"npm_bin_path" : "",
 						"watch" : 0
 					}
 ,
