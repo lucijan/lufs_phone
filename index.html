@@ -79,44 +79,51 @@
         let offStyle = "rgba(0, 0, 0, 0.3)";
         let shortStyle = "rgb(255, 166, 0)";
         let momentaryStyle = "rgb(0, 126, 236)"
-        let targetStyle = "rgba(255, 255, 255, 0.6)"
+        let targetStyle = "rgba(255, 255, 255, 0.5)"
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        let targetDb = -30.0;
-        ctx.setLineDash([3, 1]);
-        ctx.strokeStyle = targetStyle;
-        ctx.beginPath();
-        ctx.moveTo(width / 2 - targetWidth / 2, yForDb(targetDb));
-        ctx.lineTo(width / 2 + targetWidth / 2, yForDb(targetDb));
-        ctx.stroke();
-        ctx.fillStyle = targetStyle;
-        ctx.font = "13px sans-serif";
-        ctx.fillText(formatDb(targetDb), width / 2 - targetWidth / 2, yForDb(targetDb) - 3);
-
+        
         var x = barX;
         ctx.fillStyle = offStyle;
         ctx.fillRect(x, yForDb(0), shortWidth, yForDb(-150));
         ctx.fillStyle = shortStyle;
         ctx.fillRect(x, yForDb(lufs), shortWidth, yForDb(-60));
-
+        
         x += shortWidth + gap;
         ctx.fillStyle = offStyle;
         ctx.fillRect(x, yForDb(0), momentaryWidth, yForDb(-150));
         ctx.fillStyle = momentaryStyle;
         ctx.fillRect(x, yForDb(lufm), momentaryWidth, yForDb(-60));
-
+        
         x += momentaryWidth + gap;
         ctx.fillStyle = offStyle;
         ctx.fillRect(x, yForDb(0), shortWidth, yForDb(-150));
         ctx.fillStyle = shortStyle;
         ctx.fillRect(x, yForDb(lufs), shortWidth, yForDb(-60));
-      }
 
+        let targetDb = -30.0;
+        ctx.setLineDash([3, 1]);
+        ctx.strokeStyle = targetStyle;
+
+        ctx.beginPath();
+        ctx.moveTo(width / 2 - targetWidth / 2, yForDb(targetDb));
+        ctx.lineTo(barX - gap, yForDb(targetDb));
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(barX + meterWidth + gap, yForDb(targetDb));
+        ctx.lineTo(barX + (targetWidth - meterWidth / 2), yForDb(targetDb));
+        ctx.stroke();
+
+        ctx.fillStyle = targetStyle;
+        ctx.font = "13px sans-serif";
+        ctx.fillText(formatDb(targetDb), width / 2 - targetWidth / 2, yForDb(targetDb) - 3);
+      }
+      
       function scaleCanvas(canvas, context, width, height) {
         // assume the device pixel ratio is 1 if the browser doesn't specify it
         const devicePixelRatio = window.devicePixelRatio || 1;
-
+        
         // determine the 'backing store ratio' of the canvas context
         const backingStoreRatio = (
           context.webkitBackingStorePixelRatio ||
