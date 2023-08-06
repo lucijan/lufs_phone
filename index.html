@@ -1,7 +1,8 @@
 <html>
   <head>
-    <title>LU</title>
+    <title>LUFS Meter</title>
     <meta name="viewport" content="width=device-width, user-scalable=no">
+    <link rel="apple-touch-icon" sizes="128x128" href="icon.png">
     <script type="text/javascript">
       var failedTries = 0;
       var socket;
@@ -75,7 +76,7 @@
           return clip / minDb * height;
         }
 
-        let offStyle = "rgba(0, 0, 0, 0.7)";
+        let offStyle = "rgba(0, 0, 0, 0.3)";
         let shortStyle = "rgb(255, 166, 0)";
         let momentaryStyle = "rgb(0, 126, 236)"
         let targetStyle = "rgba(255, 255, 255, 0.6)"
@@ -90,6 +91,7 @@
         ctx.lineTo(width / 2 + targetWidth / 2, yForDb(targetDb));
         ctx.stroke();
         ctx.fillStyle = targetStyle;
+        ctx.font = "13px sans-serif";
         ctx.fillText(formatDb(targetDb), width / 2 - targetWidth / 2, yForDb(targetDb) - 3);
 
         var x = barX;

@@ -16,7 +16,13 @@ const requestListener = function (req, res) {
     fs.readFile("index.html", function(err, data){
       res.end(data);
     });
+  } else if (req.method == "GET" && req.url == "/icon.png") {
+    res.writeHead(200, {"Content-type": "image/png"});
+    fs.readFile("icon.png", function(err, data){
+      res.end(data);
+    });
   } else {
+    Max.post("Not found: " + req.url);
     res.writeHead(404, {"Content-type": "text/html"});
     res.end("<html><head></head><body><i>Not found!</i></body></html>");  
   }
