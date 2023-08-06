@@ -4,9 +4,10 @@
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <script type="text/javascript">
       var failedTries = 0;
+      var socket;
 
       function connect() {
-        const socket = new WebSocket("ws://" + location.hostname + ":8001");
+        socket = new WebSocket("ws://" + location.hostname + ":8001");
 
         socket.onopen = () => {
           failedTries = 0;
@@ -31,7 +32,9 @@
       }
 
       connect();
-      navigator.wakeLock.request().catch(() => {});
+      try {
+        navigator.wakeLock.request().catch(() => {});
+      } catch {}
 
       function formatDb(db) {
         if (db < -149.0) {
@@ -43,21 +46,162 @@
 
       function update(lufs, lufm) {
         const shortText = document.getElementById("lufsT");
-        shortText.innerHTML = formatDb(lufs);
+        shortText.innerHTML = formatDb(lufs) + "<span class=\"unit\">LU-S</span>";
 
         const momentaryText = document.getElementById("lufmT");
-        momentaryText.innerHTML = formatDb(lufm);
+        momentaryText.innerHTML = formatDb(lufm) + "<span class=\"unit\">LU-M</span>";
+
+        paint(lufs, lufm);
+      }
+
+      function paint(lufs, lufm) {
+        var canvas = document.getElementById("meter");
+        const ctx = canvas.getContext("2d");
+
+        scaleCanvas(canvas, ctx, 300, 400);
+        let width = canvas.width / (window.devicePixelRatio || 1);
+        let height = canvas.height / (window.devicePixelRatio || 1);
+
+        let targetWidth = 200;
+        let meterWidth = 120;
+        let shortWidth = 20;
+        let gap = 3;
+        let momentaryWidth = meterWidth - (shortWidth + gap) * 2;
+        let barX = width / 2 - meterWidth / 2;
+
+        function yForDb(db) {
+          let minDb = -60;
+          let clip = (db < minDb ? minDb : db);
+          return clip / minDb * height;
+        }
+
+        let offStyle = "rgba(0, 0, 0, 0.7)";
+        let shortStyle = "rgb(255, 166, 0)";
+        let momentaryStyle = "rgb(0, 126, 236)"
+        let targetStyle = "rgba(255, 255, 255, 0.6)"
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let targetDb = -30.0;
+        ctx.setLineDash([3, 1]);
+        ctx.strokeStyle = targetStyle;
+        ctx.beginPath();
+        ctx.moveTo(width / 2 - targetWidth / 2, yForDb(targetDb));
+        ctx.lineTo(width / 2 + targetWidth / 2, yForDb(targetDb));
+        ctx.stroke();
+        ctx.fillStyle = targetStyle;
+        ctx.fillText(formatDb(targetDb), width / 2 - targetWidth / 2, yForDb(targetDb) - 3);
+
+        var x = barX;
+        ctx.fillStyle = offStyle;
+        ctx.fillRect(x, yForDb(0), shortWidth, yForDb(-150));
+        ctx.fillStyle = shortStyle;
+        ctx.fillRect(x, yForDb(lufs), shortWidth, yForDb(-60));
+
+        x += shortWidth + gap;
+        ctx.fillStyle = offStyle;
+        ctx.fillRect(x, yForDb(0), momentaryWidth, yForDb(-150));
+        ctx.fillStyle = momentaryStyle;
+        ctx.fillRect(x, yForDb(lufm), momentaryWidth, yForDb(-60));
+
+        x += momentaryWidth + gap;
+        ctx.fillStyle = offStyle;
+        ctx.fillRect(x, yForDb(0), shortWidth, yForDb(-150));
+        ctx.fillStyle = shortStyle;
+        ctx.fillRect(x, yForDb(lufs), shortWidth, yForDb(-60));
+      }
+
+      function scaleCanvas(canvas, context, width, height) {
+        // assume the device pixel ratio is 1 if the browser doesn't specify it
+        const devicePixelRatio = window.devicePixelRatio || 1;
+
+        // determine the 'backing store ratio' of the canvas context
+        const backingStoreRatio = (
+          context.webkitBackingStorePixelRatio ||
+          context.mozBackingStorePixelRatio ||
+          context.msBackingStorePixelRatio ||
+          context.oBackingStorePixelRatio ||
+          context.backingStorePixelRatio || 1
+        );
+
+        // determine the actual ratio we want to draw at
+        const ratio = devicePixelRatio / backingStoreRatio;
+
+        if (devicePixelRatio !== backingStoreRatio) {
+          // set the 'real' canvas size to the higher width/height
+          canvas.width = width * ratio;
+          canvas.height = height * ratio;
+
+          // ...then scale it back down with CSS
+          canvas.style.width = width + 'px';
+          canvas.style.height = height + 'px';
+        }
+        else {
+          // this is a normal 1:1 device; just scale it simply
+          canvas.width = width;
+          canvas.height = height;
+          canvas.style.width = '';
+          canvas.style.height = '';
+        }
+
+        // scale the drawing context so everything will work at the higher ratio
+        context.scale(ratio, ratio);
+      }
+
+      function pause() {
+        failedTries = 25;
+        socket.close();
       }
 
       function status(message) {
         document.getElementById("status").innerText = message;
       }
+
     </script>
+    <style type="text/css">
+      body {
+        color: #fff;
+        background: #272727;
+        font: 30px sans-serif;
+      }
+
+      .unit {
+        margin-left: 5px;
+        font: small-caps;
+        font-size: 0.7em;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 50px;
+        height: 100%;
+      }
+
+      .meter-container {
+        width: 300px;
+        margin: auto;
+      }
+
+      .readout {
+        display: flex;
+      }
+
+      .readout > div {
+        flex: 1;
+      }
+    </style>
   </head>
   <body>
-    <b>hello world!</b>
-    <div id="lufsT"></div>
-    <div id="lufmT"></div>
+    <div class="grid">
+      <div class="meter-container">
+        <canvas id="meter"></canvas>
+      </div>
+      <div class="readout">
+        <div id="lufsT"></div>
+        <div id="lufmT"></div>
+      </div>  
+    </div>
     <div id="status"></div>
   </body>
 </html>
