@@ -41,7 +41,7 @@
       } catch {}
 
       function formatDb(db) {
-        if (db < -149.0) {
+        if (db < -140.0) {
           return "-&infin;"
         } else {
           return db.toFixed(1);
@@ -50,10 +50,10 @@
 
       function update(lufs, lufm) {
         const shortText = document.getElementById("lufsT");
-        shortText.innerText = formatDb(lufs);
+        shortText.innerHTML = formatDb(lufs);
 
         const momentaryText = document.getElementById("lufmT");
-        momentaryText.innerText = formatDb(lufm);
+        momentaryText.innerHTML = formatDb(lufm);
 
         paint(lufs, lufm);
       }
