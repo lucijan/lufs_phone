@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <title>LU</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <script type="text/javascript">
+      var failedTries = 0;
+
+      function connect() {
+        const socket = new WebSocket("ws://" + location.hostname + ":8001");
+
+        socket.onopen = () => {
+          failedTries = 0;
+        };
+
+        socket.onmessage = (event) => {
+          [lufs, lufm] = event.data.split(";");
+          update(parseFloat(lufs), parseFloat(lufm));
+        };
+
+        socket.onclose = (event) => {
+          if (failedTries < 3) {
+            setTimeout(() => { connect(); }, 500);
+          } else {
+            status("Failed to reconnect");
+          }
+        };
+
+        socket.onerror = (event) => {
+          failedTries++;
+        };
+      }
+
+      connect();
+      navigator.wakeLock.request().catch(() => {});
+
+      function formatDb(db) {
+        if (db < -149.0) {
+          return "-&infin;"
+        } else {
+          return db.toFixed(1);
+        }
+      }
+
+      function update(lufs, lufm) {
+        const shortText = document.getElementById("lufsT");
+        shortText.innerHTML = formatDb(lufs);
+
+        const momentaryText = document.getElementById("lufmT");
+        momentaryText.innerHTML = formatDb(lufm);
+      }
+
+      function status(message) {
+        document.getElementById("status").innerText = message;
+      }
+    </script>
+  </head>
+  <body>
+    <b>hello world!</b>
+    <div id="lufsT"></div>
+    <div id="lufmT"></div>
+    <div id="status"></div>
+  </body>
+</html>
