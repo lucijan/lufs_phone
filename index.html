@@ -23,7 +23,7 @@
           if (failedTries < 3) {
             setTimeout(() => { connect(); }, 500);
           } else {
-            status("Failed to reconnect");
+            alert("Failed to reconnect. Make sure the max patch is running and reload.");
           }
         };
 
@@ -161,11 +161,6 @@
         failedTries = 25;
         socket.close();
       }
-
-      function status(message) {
-        document.getElementById("status").innerText = message;
-      }
-
     </script>
     <style type="text/css">
       body {
@@ -181,10 +176,12 @@
       }
 
       .grid {
+        margin: auto;
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: 1fr 50px;
         height: 100%;
+        max-width: 400px;
       }
 
       .meter-container {
@@ -198,6 +195,7 @@
 
       .readout > div {
         flex: 1;
+        text-align: center;
       }
     </style>
   </head>
