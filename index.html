@@ -7,6 +7,9 @@
       var failedTries = 0;
       var socket;
 
+      let minDb = -60;
+      var targetDb = -15;
+
       function connect() {
         socket = new WebSocket("ws://" + location.hostname + ":8001");
 
@@ -55,6 +58,21 @@
         paint(lufs, lufm);
       }
 
+      function yForDb(db) {
+        var canvas = document.getElementById("meter");
+        let height = canvas.height / (window.devicePixelRatio || 1);
+        let clip = (db < minDb ? minDb : db);
+
+        return clip / minDb * height;
+      }
+
+      function dbForY(y) {
+        var canvas = document.getElementById("meter");
+        let height = canvas.height / (window.devicePixelRatio || 1);
+
+        return y/height * minDb;
+      }
+
       function paint(lufs, lufm) {
         var canvas = document.getElementById("meter");
         const ctx = canvas.getContext("2d");
@@ -69,12 +87,6 @@
         let gap = 3;
         let momentaryWidth = meterWidth - (shortWidth + gap) * 2;
         let barX = width / 2 - meterWidth / 2;
-
-        function yForDb(db) {
-          let minDb = -60;
-          let clip = (db < minDb ? minDb : db);
-          return clip / minDb * height;
-        }
 
         let offStyle = "rgba(0, 0, 0, 0.3)";
         let shortStyle = "rgb(255, 166, 0)";
@@ -101,7 +113,6 @@
         ctx.fillStyle = shortStyle;
         ctx.fillRect(x, yForDb(lufs), shortWidth, yForDb(-60));
 
-        let targetDb = -30.0;
         ctx.setLineDash([3, 1]);
         ctx.strokeStyle = targetStyle;
 
@@ -156,6 +167,24 @@
         // scale the drawing context so everything will work at the higher ratio
         context.scale(ratio, ratio);
       }
+
+      window.onload = function() {
+        var canvas = document.getElementById("meter");
+        console.log(canvas);
+
+        canvas.onmousemove = function(e) {
+          if (e.buttons == 1) {
+            targetDb = dbForY(e.offsetY);
+          }
+
+          e.preventDefault();
+        }
+
+        canvas.ontouchmove = function(e) {
+          targetDb = dbForY(e.layerY);
+          e.preventDefault();
+        }
+      };
     </script>
     <style type="text/css">
       body {
@@ -182,6 +211,10 @@
       .meter-container {
         width: 300px;
         margin: auto;
+      }
+
+      #meter {
+        touch-action: none;
       }
 
       .readout {
