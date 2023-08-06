@@ -47,10 +47,10 @@
 
       function update(lufs, lufm) {
         const shortText = document.getElementById("lufsT");
-        shortText.innerHTML = formatDb(lufs) + "<span class=\"unit\">LU-S</span>";
+        shortText.innerText = formatDb(lufs);
 
         const momentaryText = document.getElementById("lufmT");
-        momentaryText.innerHTML = formatDb(lufm) + "<span class=\"unit\">LU-M</span>";
+        momentaryText.innerText = formatDb(lufm);
 
         paint(lufs, lufm);
       }
@@ -156,11 +156,6 @@
         // scale the drawing context so everything will work at the higher ratio
         context.scale(ratio, ratio);
       }
-
-      function pause() {
-        failedTries = 25;
-        socket.close();
-      }
     </script>
     <style type="text/css">
       body {
@@ -205,8 +200,14 @@
         <canvas id="meter"></canvas>
       </div>
       <div class="readout">
-        <div id="lufsT"></div>
-        <div id="lufmT"></div>
+        <div>
+          <span id="lufsT">-&infin;</span>
+          <span class="unit">LU-S</span>
+        </div>
+        <div>
+          <span id="lufmT">-&infin;</span>
+          <span class="unit">LU-M</span>
+        </div>
       </div>  
     </div>
     <div id="status"></div>
